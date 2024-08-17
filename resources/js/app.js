@@ -1,8 +1,8 @@
-import './bootstrap'
-import '../css/app.css'
+import './bootstrap';
+import '../css/app.css';
 
-import { createApp, h } from 'vue'
-import { createInertiaApp } from '@inertiajs/vue3'
+import { createApp, h } from 'vue';
+import { createInertiaApp } from '@inertiajs/vue3';
 
 createInertiaApp({
   resolve: name => {
@@ -14,4 +14,4 @@ createInertiaApp({
       .use(plugin)
       .mount(el)
   },
-})
+});
