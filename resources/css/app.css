@@ -2,3 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+html{
+  font-size: 0.8em;
+}
+
+button{
+  background-color: #eee;
+  border: 1px solid #999;
+  border-radius: 5px;
+  padding: 3px 10px;
+  margin: 5px;
+  box-shadow: inset 2px 2px 2px #bbb;
+}

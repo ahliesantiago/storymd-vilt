@@ -1,0 +1,8 @@
+/* For search page */
+form{
+  ul{
+    li{
+      list-style-type: none;
+    }
+  }
+}

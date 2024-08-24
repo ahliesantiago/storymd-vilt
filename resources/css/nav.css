@@ -1,3 +1,9 @@
-.menu ul, .menu li, .menu form, .menu input{
-  display: inline-block;
+.menu{
+  color: white;
+  ul, li, form, input{
+    display: inline-block;
+  }
+  li{
+    margin-right: 15px;
+  }
 }

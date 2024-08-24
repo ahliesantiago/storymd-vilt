@@ -3,8 +3,10 @@ An [Archive of Our Own (AO3)](https://archiveofourown.org/) clone, StoryMd ("Sto
 
 # Technology
 Tools used to build this app include:
-- VILT stack (Vue.js, Inertia, Laravel, Tailwind CSS)
-- Ant Design
+- Laravel, MAMP (Apache, MySQL, PHP), Nginx via Valet
+- Tailwind CSS, Ant Design
+<!-- (later) -->
+<!-- - VILT stack (Vue.js, Inertia, Laravel, Tailwind CSS) --> -->
 <!-- - Redis or PostgreSQL -->
 
 (This is a work in progress.)

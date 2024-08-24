@@ -1,15 +1,17 @@
-<script>
-export default {
-  
-};
-</script>
-
-<template>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>StoryMd</title>
+</head>
+<body>
   <nav>
     <div class='head flex justify-between p-2'>
       <h2 class='text-3xl'><a href="/">StoryMD</a></h2>
       <div class='w-1/4 flex justify-between'>
-        <a href='/'>Hi, {{ user }}!</a>
+        <a href='/'>Hi, {{ $user }}!</a>
         <a href='/'>Post</a>
         <a href='/'>Log Out</a>
       </div>
@@ -17,7 +19,7 @@ export default {
     <div class='menu flex justify-between ps-6 pe-2 py-1 bg-gradient-to-b from-sky-600 to-sky-950'>
       <ul>
         <li><a href="/">Fandoms</a></li>
-        <li><a href="/">Browse</a></li>
+        <li><a href="/browse">Browse</a></li>
         <li><a href="/">Search</a></li>
         <li><a href="/">About</a></li>
       </ul>
@@ -93,4 +95,5 @@ export default {
       </ul>
     </div>
   </footer>
-</template>
+</body>
+</html>
