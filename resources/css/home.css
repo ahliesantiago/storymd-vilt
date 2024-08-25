@@ -7,7 +7,7 @@ main{
   .homePanels{
     width: 50%;
     height: 400px;
-    border: 1px dotted red;
+    /* border: 1px dotted red; */
     padding: 0 25px 20px;
 
     h2{

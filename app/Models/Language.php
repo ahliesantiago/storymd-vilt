@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Language extends Model
 {
     use HasFactory;
+
+    protected $primaryKey = 'language_code';
+    public $incrementing = false;
+    
+    public function works(){
+      return $this->hasMany(Work::class, 'language_code', 'language_code');
+    }
 }
