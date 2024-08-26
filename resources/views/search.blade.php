@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Works search | StoryMD</title>
-</head>
-<body>
+<x-layout :title="'Search | StoryMD'">
   <form action="/" method="GET">
     <p>Work Info</p>
     <label for="query">Search any field:</label>
@@ -190,5 +182,4 @@
     <input type="button" name="commit" value="Search">
     <input type="button" name="commit" value="Sort and Filter">
   </form>
-</body>
-</html>
+</x-layout>

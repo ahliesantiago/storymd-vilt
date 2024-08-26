@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>@yield('title', 'StoryMd')</title>
+  <title>{{ $title }}</title>
   @vite('resources/css/app.css')
   @vite('resources/css/nav.css')
   @yield('styles')
@@ -21,10 +21,25 @@
     </div>
     <div class='menu flex justify-between ps-6 pe-2 py-1 bg-gradient-to-b from-sky-600 to-sky-950 text-white'>
       <ul>
-        <li><a href="/">Fandoms</a></li>
-        <li><a href="/browse">Browse</a></li>
-        <li><a href="/">Search</a></li>
-        <li><a href="/">About</a></li>
+        <li><a href="/media">Fandoms</a></li>
+        {{-- <ul>
+          <li><a href="/media">All Fandoms</a></li>
+          <li><a href="/media/">Anime & Manga</a></li>
+          <li><a href="/media/">Books & Literature</a></li>
+          <li><a href="/media/">Cartoons & Animations</a></li>
+          <li><a href="/media/">Celebrities & Real People</a></li>
+          <li><a href="/media/">Comics, Graphic Novels, Webtoons, etc.</a></li>
+          <li><a href="/media/">Movies</a></li>
+          <li><a href="/media/">Music & Bands</a></li>
+          <li><a href="/media/">Theater</a></li>
+          <li><a href="/media/">TV Shows</a></li>
+          <li><a href="/media/">Video Games</a></li>
+          <li><a href="/media/">Other Media</a></li>
+          <li><a href="/media/">Uncategorized Fandoms</a></li>
+        </ul> --}}
+        <li><a href="/works">Browse</a></li>
+        <li><a href="/works/search">Search</a></li>
+        <li><a href="/about">About</a></li>
       </ul>
       <form action='/works/search' method='post' class=''>
         <input type='text' class='me-2 rounded-lg'>
@@ -32,8 +47,8 @@
       </form>
     </div>
   </nav>
-
-  @yield('content')
+  
+  {{ $slot }}
 
   <footer class='text-white min-h-40 flex justify-around ps-6 pe-2 py-3 bg-sky-900'>
     <div class='basis-1/6'>

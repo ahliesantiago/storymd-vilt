@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Work;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -9,10 +10,6 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/works', function (Request $request) {
     return response()->json([
-      'works' => [
-        [
-          'title' => 'Sample Work 1'
-        ]
-      ]
+      'works' => Work::all(),
     ]);
 });

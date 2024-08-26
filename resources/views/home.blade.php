@@ -1,11 +1,8 @@
-@extends('layout')
-
 @section('styles')
   @vite('resources/css/home.css')
 @endsection
 
-@section('content')
-
+<x-layout :title="'StoryMD'">
   <main>
     <p class='message'></p>
     <div class='homePanels favorites'>
@@ -35,5 +32,4 @@
       
     </div>
   </main>
-  
-@endsection
+</x-layout>
