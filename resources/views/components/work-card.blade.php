@@ -10,26 +10,30 @@
             <a class="text-red-800 underline" href="/works/{{ $work['id'] }}/chapters/1">{{ $work['title'] }}</a>
             by <a class="text-red-800 underline" href="#">{{ $work->creator->username }}</a>
           </p>
-          {{-- Hard-coded, to be replaced --}}
-          <p><a href="/" class="underline decoration-dotted">Series</a></p>
+          <p>
+            @php
+              $fandoms = $work->fandoms->map(function ($fandom) {
+                return $fandom->pivot->is_major
+                  ? "<a href='/works/tags/{$fandom->fandom_name}' class='font-bold underline decoration-dotted'>$fandom->fandom_name</a>"
+                  : "<a href='/works/tags/{$fandom->fandom_name}' class='underline decoration-dotted'>$fandom->fandom_name</a>";
+              })->implode(', ');
+            @endphp
+            {!! $fandoms !!}
+          </p>
         </div>
       </div>
     </div>
     <p>{{ date('d M Y', strtotime($work->chapters->first()['published_at'])) }}</p>
   </div>
-  <p>
-    {{-- Hard-coded, to be replaced --}}
-    <a href="/" class="underline decoration-dotted font-bold">Warning1</a>,
-    <a href="/" class="underline decoration-dotted font-bold">Warning2</a>,
-    <a href="/" class="underline decoration-dotted">Relationship/Pair1</a>,
-    <a href="/" class="underline decoration-dotted">Relationship/Pair2</a>,
-    <a href="/" class="underline decoration-dotted">Relationship/Pair3</a>
+
+  <p class="my-2">
+    <x-work-tags :work="$work" />
   </p>
 
-  <p>{{ $work->chapters->first()->summary }}</p>
+  <p class="my-3">{{ $work->chapters->first()->summary }}</p>
 
   <p class="text-right">
-    {{ $work['language_code'] ? 'Language: ' . $work->language->language_name : '' }}&nbsp;&nbsp;
+    Language: {{ $work->language->language_name }}&nbsp;&nbsp;
     Words: {{ $work['word_count'] }}&nbsp;&nbsp;
     Chapters: {{ $work->chapters->count() }}/@if ( $work['is_complete'] ){{ $work->chapters->count() }} @else{{ $work['expected_chapter_count'] ? $work['expected_chapter_count'] : '?' }} @endif&nbsp;&nbsp;
     Comments: {{ $work['comment_count'] }}&nbsp;&nbsp;

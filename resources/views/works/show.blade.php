@@ -28,56 +28,54 @@ should be 404
       <button>Share</button>
       <button>Download</button>
     </div>
+
     <x-card class="mx-4">
-      <ul class="information">
-        <li>
-          <p>Rating:</p>
-          <p>{{ $rating }}</p>
-        </li>
-        {{-- <li>
-          <p>Archive Warning:</p>
-          <p>{{ $work['warnings'] }}</p>
-        </li>
-        <li>
-          <p>Category:</p>
-          <p>{{ $work['category'] }}</p>
-        </li>
-        <li>
-          <p>Fandom:</p>
-          <p>{{ $work['main_fandom'] }}@if ($work['other_fandom']){{ ', '. implode(', ', $work['other_fandom']) }}@endif</p>
-        </li>
-        <li>
-          <p>Relationships:</p>
-          <p>{{ implode(", ", $work['relationships']) }}</p>
-        </li>
-        <li>
-          <p>Characters:</p>
-          <p>{{ implode(", ", $work['characters']) }}</p>
-        </li>
-        <li>
-          <p>Additional Tags:</p>
-          <p>{{ implode(", ", $work['tags']) }}</p>
-        </li> --}}
-        @if ($work['language_code'])
-        <li>
-          <p>Language:</p>
-          <p>{{ $language }}</p>
-        </li>
-        @endif
-        <li>
-          <p>Stats:</p>
-          <p>
-            Published: {{ date('d M Y', strtotime($work->chapters->first()['published_at'])) }}&nbsp;&nbsp;
-            @if ($work['is_complete'] && $chapter_count == $final_chapter['position'] )
-            Completed: {{ date('d M Y', strtotime($final_chapter['published_at'])) }}&nbsp;&nbsp;
-            @endif
-            Words: {{ $work['word_count'] }}&nbsp;&nbsp;
-            Chapters: {{ $chapter_count }}/@if ( $work['is_complete'] ){{ $chapter_count }}@else{{ $work['expected_chapter_count'] ? $work['expected_chapter_count'] : '?' }} @endif&nbsp;&nbsp;
-            Comments: {{ $work['comment_count'] }}&nbsp;&nbsp;
-            Kudos: {{ $work['kudos_count'] }}&nbsp;&nbsp;
-            Bookmarks: {{ $work['bookmark_count'] }}&nbsp;&nbsp;
-            Hits: {{ $work['hit_count'] }}&nbsp;&nbsp;
-          </p>
+      <div class="grid grid-cols-4 gap-1">
+        <p class="col-span-1">Rating:</p>
+        <p class="col-span-3">{{ $work->rating->rating_name }}</p>
+        <p class="col-span-1 font-bold">Archive Warning{{ $work->warnings->count() > 1 ? 's' : '' }}:</p>
+        <p class="col-span-3 font-bold">
+          {!!
+            $work->warnings->map(function ($warning) {
+              return "<a href='/works/tags/{$warning->warning_name}' class='underline decoration-dotted'>$warning->warning_name</a>";
+            })->implode(', ')
+          !!}
+        </p>
+        <p class="col-span-1">Category:</p>
+        <p class="col-span-3">
+          {!!
+            $work->categories->map(function ($category) {
+              return "<a href='/works/tags/{$category->category_name}' class='underline decoration-dotted'>$category->category_name</a>";
+            })->implode(', ')
+          !!}
+        </p>
+        <p class="col-span-1">Fandom:</p>
+        <p class="col-span-3">
+          {!!
+            $work->fandoms->map(function ($fandom) {
+              return "<a href='/works/tags/{$fandom->fandom_name}' class='underline decoration-dotted'>$fandom->fandom_name</a>";
+            })->implode(', ')
+          !!}
+        </p>
+        <x-work-type-tags :work="$work" :type="'Relationships'" :name="'relationship'" />
+        <x-work-type-tags :work="$work" :type="'Characters'" :name="'character'" />
+        <x-work-type-tags :work="$work" :type="'Additional Tags'" :name="'additional'" />
+        <p class="col-span-1">Language:</p>
+        <p class="col-span-3">{{ $work->language->language_name }}</p>
+        <p class="col-span-1">Stats:</p>
+        <p class="col-span-3">
+          Published: {{ date('d M Y', strtotime($work->chapters->first()['published_at'])) }}&nbsp;&nbsp;
+          @if ($work['is_complete'] && $chapter_count == $final_chapter['position'] )
+          Completed: {{ date('d M Y', strtotime($final_chapter['published_at'])) }}&nbsp;&nbsp;
+          @endif
+          Words: {{ $work['word_count'] }}&nbsp;&nbsp;
+          Chapters: {{ $chapter_count }}/@if ( $work['is_complete'] ){{ $chapter_count }}@else{{ $work['expected_chapter_count'] ? $work['expected_chapter_count'] : '?' }} @endif&nbsp;&nbsp;
+          Comments: {{ $work['comment_count'] }}&nbsp;&nbsp;
+          Kudos: {{ $work['kudos_count'] }}&nbsp;&nbsp;
+          Bookmarks: {{ $work['bookmark_count'] }}&nbsp;&nbsp;
+          Hits: {{ $work['hit_count'] }}&nbsp;&nbsp;
+        </p>
+        </div>
         </li>
       </ul>
     </x-card>

@@ -26,11 +26,11 @@ class DatabaseSeeder extends Seeder
         //   ]);
         // }
 
-        // Creates the nth chapter of a work that is only missing one more chapter
-        Chapter::factory()->create([
-          'work_id' => 11, // the ID will be changed as needed
-          'position' => 2, // the position will be changed as needed
-        ]);
+        // // Creates the nth chapter of a work that is only missing one more chapter
+        // Chapter::factory()->create([
+        //   'work_id' => 11, // the ID will be changed as needed
+        //   'position' => 2, // the position will be changed as needed
+        // ]);
 
         // // Creates n # of chapters (after the first) of a work
         // foreach(range(2, 3) as $position){ // the range will be changed as needed

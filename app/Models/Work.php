@@ -24,4 +24,26 @@ class Work extends Model
     public function language(){
       return $this->belongsTo(Language::class, 'language_code', 'language_code');
     }
+
+    public function rating(){
+      return $this->belongsTo(Rating::class);
+    }
+
+    public function categories(){
+      return $this->belongsToMany(Category::class, 'work_categories');
+    }
+
+    public function fandoms(){
+      return $this->belongsToMany(Fandom::class, 'work_fandoms')
+        ->withPivot('is_major');
+    }
+
+    public function warnings(){
+      return $this->belongsToMany(Warning::class, 'work_warnings');
+    }
+
+    public function tags(){
+      return $this->belongsToMany(Tag::class, 'work_tags')
+        ->withPivot('is_major');
+    }
 }

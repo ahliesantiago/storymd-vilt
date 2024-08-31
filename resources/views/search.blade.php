@@ -87,7 +87,7 @@
       </li>
       <li>
         <input type="checkbox" name="warning_ids" id="suicide" value="suicide">
-        <label for="suicide">Graphic Depictions of Suicide or Suicidal Thoughts</label>
+        <label for="suicide">Graphic Depictions of Suicide</label>
       </li>
       <li>
         <input type="checkbox" name="warning_ids" id="noncon" value="noncon">

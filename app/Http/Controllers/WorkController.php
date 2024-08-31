@@ -15,7 +15,8 @@ class WorkController extends Controller
   // Fetch and show all works
   public function index(){
     return view('works.index', [
-      'works' => Work::with(['creator', 'chapters', 'language'])->latest()->get(),
+      'works' => Work::latest()->get(),
+      'type' => "browse"
     ]);
   }
 
@@ -27,8 +28,6 @@ class WorkController extends Controller
     if($work && $chapter){
       return view('works.show', [
         'work' => $work,
-        'rating' => Rating::find(Work::find($work_id)->rating_id)->rating_name,
-        'language' => Work::find($work_id)->language_code ? Language::find(Work::find($work_id)->language_code)->language_name : null,
         'chapter' => $chapter,
         'final_chapter' => Chapter::where('work_id', $work_id)->orderBy('position', 'desc')->first(),
         'chapter_count' => Chapter::where('work_id', $work_id)->count()
@@ -42,6 +41,7 @@ class WorkController extends Controller
     return view('works.index', [
       'works' => Work::with(['creator', 'chapters', 'language'])
         ->latest()->filter(['tag' => $tag])->get(),
+      'type' => "tags"
     ]);
   }
 
