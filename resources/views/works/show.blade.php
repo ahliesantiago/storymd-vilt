@@ -15,18 +15,28 @@ should be 404
   <div class="work">
     <div class="nav-buttons text-center">
       @if ($chapter_count > 1)
+        @if($chapter_position == 'all')
+          <button>Chapter by Chapter</button>
+        @endif
         <button>Entire Work</button>
         @if ( $chapter['position'] != $chapter_count ) <button><a href="/works/{{ $work['id'] }}/chapters/{{ $chapter['position'] + 1 }}">Next Chapter →</a></button> @endif
         @if ( $chapter['position'] > 1 ) <button><a href="/works/{{ $work['id'] }}/chapters/{{ $chapter['position'] - 1 }}">← Previous Chapter</a></button> @endif
         <button>Chapter Index ↓</button>
       @endif
-      <button>Mark as Seen</button>
-      <button>Mark for Later</button>
-      <button>Mark as Read</button>
-      <button>Bookmark</button>
       <button>Comments</button>
       <button>Share</button>
       <button>Download</button>
+    </div>
+    <div class="nav-buttons text-center">
+      <button>Mark as Seen</button>
+      {{-- <button>Unmark as Seen</button> --}}
+      <button>Mark as Skipped</button>
+      {{-- <button>Unmark as Skipped</button> --}}
+      <button>Mark as Read</button>
+      {{-- <button>Unmark as Read</button> --}}
+      <button>Mark for Later</button>
+      {{-- <button>Unmark for Later</button> --}}
+      <button>Bookmark</button>
     </div>
 
     <x-card class="mx-4">
@@ -45,7 +55,13 @@ should be 404
         <p class="col-span-3">
           {!!
             $work->categories->map(function ($category) {
-              return "<a href='/works/tags/{$category->category_name}' class='underline decoration-dotted'>$category->category_name</a>";
+              if(strpos($category->category_name, '/')){
+                $category_name = str_replace('/', '*s*', $category->category_name);
+
+                return "<a href='/works/tags/{$category_name}' class='underline decoration-dotted'>$category->category_name</a>";
+              }else{
+                return "<a href='/works/tags/{$category->category_name}' class='underline decoration-dotted'>$category->category_name</a>";
+              }
             })->implode(', ')
           !!}
         </p>
@@ -70,10 +86,10 @@ should be 404
           @endif
           Words: {{ $work['word_count'] }}&nbsp;&nbsp;
           Chapters: {{ $chapter_count }}/@if ( $work['is_complete'] ){{ $chapter_count }}@else{{ $work['expected_chapter_count'] ? $work['expected_chapter_count'] : '?' }} @endif&nbsp;&nbsp;
-          Comments: {{ $work['comment_count'] }}&nbsp;&nbsp;
+          {{-- Comments: {{ $work['comment_count'] }}&nbsp;&nbsp;
           Kudos: {{ $work['kudos_count'] }}&nbsp;&nbsp;
           Bookmarks: {{ $work['bookmark_count'] }}&nbsp;&nbsp;
-          Hits: {{ $work['hit_count'] }}&nbsp;&nbsp;
+          Hits: {{ $work['hit_count'] }}&nbsp;&nbsp; --}}
         </p>
         </div>
         </li>

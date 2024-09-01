@@ -23,7 +23,17 @@
         </div>
       </div>
     </div>
-    <p>{{ date('d M Y', strtotime($work->chapters->first()['published_at'])) }}</p>
+    <div>
+      <p class="text-right">{{ date('d M Y', strtotime($work->chapters->first()['published_at'])) }}</p>
+      <p class="text-xs text-right">
+        mark as:
+          <x-dotted-link url="#">seen</x-dotted-link> |
+          <x-dotted-link url="#">skipped</x-dotted-link> |
+          <x-dotted-link url="#">read</x-dotted-link> |
+          <x-dotted-link url="#">for later</x-dotted-link> |
+          <x-dotted-link url="#">edit bookmark</x-dotted-link>
+      </p>
+    </div>
   </div>
 
   <p class="my-2">
@@ -36,9 +46,9 @@
     Language: {{ $work->language->language_name }}&nbsp;&nbsp;
     Words: {{ $work['word_count'] }}&nbsp;&nbsp;
     Chapters: {{ $work->chapters->count() }}/@if ( $work['is_complete'] ){{ $work->chapters->count() }} @else{{ $work['expected_chapter_count'] ? $work['expected_chapter_count'] : '?' }} @endif&nbsp;&nbsp;
-    Comments: {{ $work['comment_count'] }}&nbsp;&nbsp;
+    {{-- Comments: {{ $work['comment_count'] }}&nbsp;&nbsp;
     Kudos: {{ $work['kudos_count'] }}&nbsp;&nbsp;
     Bookmarks: {{ $work['bookmark_count'] }}&nbsp;&nbsp;
-    Hits: {{ $work['hit_count'] }}&nbsp;&nbsp;
+    Hits: {{ $work['hit_count'] }}&nbsp;&nbsp; --}}
   </p>
 </x-card>

@@ -19,7 +19,7 @@
         <a href='/'>Log Out</a>
       </div>
     </div>
-    <div class='menu flex justify-between ps-6 pe-2 py-1 bg-gradient-to-b from-sky-600 to-sky-950 text-white'>
+    <div class='menu flex justify-between items-center ps-6 pe-2 py-1 bg-gradient-to-b from-sky-600 to-sky-950 text-white'>
       <ul>
         <li><a href="/media">Fandoms</a></li>
         {{-- <ul>
@@ -41,9 +41,10 @@
         <li><a href="/works/search">Search</a></li>
         <li><a href="/about">About</a></li>
       </ul>
-      <form action='/works/search' method='post' class=''>
-        <input type='text' class='me-2 rounded-lg'>
-        <input type='submit' value='Search'>
+
+      <form action='/works/search' method='get' class=''>
+        <input type='text' name='work_search[query]' class='me-2 px-2 rounded-lg'>
+        <button class="m-0 py-0 px-3">Search</button>
       </form>
     </div>
   </nav>

@@ -10,7 +10,42 @@ class Work extends Model
     use HasFactory;
 
     public function scopeFilter($query, array $filters){
-      dd($filters['tag']);
+      if(isset($filters['tag'])){
+        $tag = $filters['tag'];
+
+        $query->whereHas('tags', function($query) use ($tag){
+          $query->where('tag_name', $tag);
+        })
+        ->orWhereHas('fandoms', function($query) use ($tag){
+          $query->where('fandom_name', $tag);
+        })
+        ->orWhereHas('rating', function($query) use ($tag){
+          $query->where('rating_name', $tag);
+        })
+        ->orWhereHas('categories', function($query) use ($tag){
+          $query->where('category_name', $tag);
+        })
+        ->orWhereHas('warnings', function($query) use ($tag){
+          $query->where('warning_name', $tag);
+        });
+      }
+
+      if(isset($filters['search'])){
+        $search = $filters['search'];
+
+        $query->where('title', 'like', '%' . $search . '%')
+        ->orWhereHas('chapters', function($query) use ($search){
+          $query
+            ->where('summary', 'like', '%' . $search . '%')
+            ->where('position', 1);
+        })
+        ->orWhereHas('tags', function($query) use ($search){
+          $query->where('tag_name', 'like', '%' . $search . '%');
+        })
+        ->orWhereHas('fandoms', function($query) use ($search){
+          $query->where('fandom_name', 'like', '%' . $search . '%');
+        });
+      }
     }
 
     public function creator(){

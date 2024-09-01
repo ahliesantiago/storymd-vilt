@@ -29,6 +29,7 @@ class WorkController extends Controller
       return view('works.show', [
         'work' => $work,
         'chapter' => $chapter,
+        'chapter_position' => $chapter_position,
         'final_chapter' => Chapter::where('work_id', $work_id)->orderBy('position', 'desc')->first(),
         'chapter_count' => Chapter::where('work_id', $work_id)->count()
       ]);
@@ -38,14 +39,27 @@ class WorkController extends Controller
   }
 
   public function tags($tag) {
+    $escapedTag = str_replace('*s*', '/', $tag);
+
     return view('works.index', [
-      'works' => Work::with(['creator', 'chapters', 'language'])
-        ->latest()->filter(['tag' => $tag])->get(),
-      'type' => "tags"
+      'works' => Work::latest()
+        ->filter(['tag' => $escapedTag])->get(),
+      'type' => "tags",
+      'tag' => $tag
     ]);
   }
 
   public function search(Request $request) {
+    $search_query = $request->input('work_search.query');
+    return view('works.index', [
+      'works' => Work::latest()
+        ->filter(['search' => $search_query])->get(),
+      'type' => "search",
+      'search_query' => $search_query,
+    ]);
+  }
+
+  public function advanced_search(Request $request) {
     // dd($request);
     return view('search');
   }
