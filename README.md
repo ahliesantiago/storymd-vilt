@@ -6,7 +6,7 @@ Tools used to build this app include:
 - Laravel, MAMP (Apache, MySQL, PHP), Nginx via Valet
 - Tailwind CSS, Ant Design
 <!-- (later) -->
-<!-- - VILT stack (Vue.js, Inertia, Laravel, Tailwind CSS) --> -->
-<!-- - Redis or PostgreSQL -->
+<!-- - VILT stack (Vue.js, Inertia, Laravel, Tailwind CSS) -->
+<!-- - Laravel Valet, Docker with Laravel Sail, Redis or PostgreSQL -->
 
 (This is a work in progress.)

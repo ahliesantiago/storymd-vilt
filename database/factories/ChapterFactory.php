@@ -16,20 +16,25 @@ class ChapterFactory extends Factory
      */
     public function definition(): array
     {
+        $paragraphs = [];
+
+        for ($i = 0; $i < 5; $i++) {
+          $paragraphs[] = $this->faker->paragraph(15);
+        }
+
         return [
           'chapter_title' => $this->faker->words(3, true),
-          'content' => $this->faker->paragraphs(5, true),
+          // 'content' => $this->faker->paragraphs(5, true),
+          'content' => implode("\n\n", $paragraphs),
           'summary' => $this->faker->paragraph(3),
           'beginning_notes' => $this->faker->paragraph(2),
           'end_notes' => $this->faker->paragraph(2),
           'word_count' => $this->faker->numberBetween(1200, 7650),
           // 'is_published' => true,
-          // 'published_at' => $this->faker->dateTime('now'),
-          // 'is_complete' => true,
-          // 'completed_at' => $this->faker->dateTime('now'),
-          // 'revised_at' => $this->faker->dateTime('now'),
-          'created_at' => $this->faker->dateTime('now'),
-          'updated_at' => $this->faker->dateTime('now'),
+          'published_at' => now(),
+          // 'revised_at' => now(),
+          'created_at' => now(),
+          'updated_at' => now(),
         ];
     }
 }

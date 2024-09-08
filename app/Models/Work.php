@@ -29,22 +29,51 @@ class Work extends Model
           $query->where('warning_name', $tag);
         });
       }
+      
+      $searchWord = function($query, $column, $search){
+          $query->where($column, $search) // search exact match
+            ->orWhere($column, 'like', "{$search}%") // search beginning of the column value
+            ->orWhere($column, 'like', "% {$search}%") // search  of the column value
+            ->orWhere($column, 'like', "% {$search}"); // search end of the column value
+      };
 
       if(isset($filters['search'])){
         $search = $filters['search'];
 
-        $query->where('title', 'like', '%' . $search . '%')
-        ->orWhereHas('chapters', function($query) use ($search){
-          $query
-            ->where('summary', 'like', '%' . $search . '%')
-            ->where('position', 1);
-        })
-        ->orWhereHas('tags', function($query) use ($search){
-          $query->where('tag_name', 'like', '%' . $search . '%');
-        })
-        ->orWhereHas('fandoms', function($query) use ($search){
-          $query->where('fandom_name', 'like', '%' . $search . '%');
-        });
+        // If the search query's characters are 4 or more, search anywhere in the title, summary, tags, and fandoms
+        if(strlen($search) > 3){
+          $query->where('title', 'like', '%' . $search . '%')
+          ->orWhereHas('chapters', function($query) use ($search){
+            $query
+              ->where('position', 1)
+              ->where('summary', 'like', '%' . $search . '%');
+          })
+          ->orWhereHas('tags', function($query) use ($search){
+            $query->where('tag_name', 'like', '%' . $search . '%');
+          })
+          ->orWhereHas('fandoms', function($query) use ($search){
+            $query->where('fandom_name', 'like', '%' . $search . '%');
+          });
+        // If the search query consists only of 1-3 characters, search for exact word matches within the title, summary, tags, and fandoms
+        }else{
+          $query->where(function($query) use ($search, $searchWord){
+            $searchWord($query, 'title', $search);
+          })
+          ->orWhereHas('tags', function($query) use ($search, $searchWord){
+            $searchWord($query, 'tag_name', $search);
+          })
+          ->orWhereHas('fandoms', function($query) use ($search, $searchWord){
+            $searchWord($query, 'fandom_name', $search);
+          })
+          ->orWhereHas('chapters', function($query) use ($search, $searchWord){
+            $query
+              ->where('position', 1)
+              ->where('summary', $search)
+              ->orWhere('summary', 'like', "{$search} %")
+              ->orWhere('summary', 'like', "% {$search} %")
+              ->orWhere('summary', 'like', "% {$search}");
+          });
+        }
       }
     }
 

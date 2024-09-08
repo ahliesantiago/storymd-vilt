@@ -20,14 +20,13 @@ class WorkFactory extends Factory
           'title' => $this->faker->words(3, true),
           'creator_id' => $this->faker->numberBetween(1, 10),
           'expected_chapter_count' => $this->faker->numberBetween(1, 10),
-          'fandom_id' => $this->faker->numberBetween(1, 13),
           'word_count' => $this->faker->numberBetween(1200, 17650),
-          'language_code' => 'en',
+          'language_code' => 'la',
           'rating_id' => $this->faker->numberBetween(1, 5),
-          'created_at' => $this->faker->dateTime('now'),
-          'updated_at' => $this->faker->dateTime('now'),
-          // 'is_complete' => true,
-          // 'completed_at' => $this->faker->dateTime('now'),
+          'created_at' => now(),
+          'updated_at' => now(),
+          'is_complete' => false,
+          'completed_at' => now(),
         ];
     }
 }
