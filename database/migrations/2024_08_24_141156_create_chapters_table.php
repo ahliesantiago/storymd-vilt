@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('beginning_notes', 5000)->nullable();
             $table->string('end_notes', 5000)->nullable();
             $table->integer('word_count');
+            $table->boolean('is_published')->default(true);
             $table->datetime('published_at');
             $table->datetime('revised_at');
             $table->timestamps();

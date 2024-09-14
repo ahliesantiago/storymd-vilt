@@ -13,9 +13,9 @@
   <nav>
     <div class='head flex justify-between p-2'>
       <h2 class='text-3xl'><a href="/">StoryMD</a></h2>
-      <div class='w-1/3 flex justify-between'>
+      <div class='w-1/4 flex justify-between'>
         <a href='/'>Hi, usernamehere!</a>
-        <a href='/'>Post</a>
+        <a href='/works/create'>Post</a>
         <a href='/'>Log Out</a>
       </div>
     </div>

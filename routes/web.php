@@ -17,8 +17,12 @@ Route::get('/about', function () {
 
 Route::get('/works', [WorkController::class, 'index']);
 
-Route::get('/works/{work_id}/chapters/{chapter_position}', [WorkController::class, 'show']);
+Route::get('/works/create', [WorkController::class, 'create']);
+
+Route::post('/works', [WorkController::class, 'store']);
 
 Route::get('/works/search', [WorkController::class, 'search']);
 
 Route::get('/works/tags/{tag}', [WorkController::class, 'tags']);
+
+Route::get('/works/{work_id}/chapters/{chapter_position}', [WorkController::class, 'show']);

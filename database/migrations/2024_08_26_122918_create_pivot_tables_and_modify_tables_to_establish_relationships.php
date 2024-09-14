@@ -11,11 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-      Schema::table('works', function (Blueprint $table) {
-        $table->dropForeign(['fandom_id']);
-        $table->dropColumn('fandom_id');
-      });
-
       Schema::create('work_categories', function (Blueprint $table) {
         $table->id();
         $table->foreignId('work_id')->constrained()->onDelete('restrict');
