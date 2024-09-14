@@ -25,4 +25,4 @@ Route::get('/works/search', [WorkController::class, 'search']);
 
 Route::get('/works/tags/{tag}', [WorkController::class, 'tags']);
 
-Route::get('/works/{work_id}/chapters/{chapter_position}', [WorkController::class, 'show']);
+Route::get('/works/{work_id}/chapters/{chapter_position}', [WorkController::class, 'show'])->name('new-work.show');

@@ -25,7 +25,7 @@
           </div>
       @endif
         @foreach($works as $work)
-          @if($work->chapters->first()['is_published'] && $work['privacy'] == "public")
+          @if($work->chapters->first()['is_published'] && $work['privacy'] != "private")
             <x-work-card :work="$work" />
           @endif
         @endforeach

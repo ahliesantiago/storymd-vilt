@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Tag;
 
 use App\Models\User;
 use App\Models\Work;
-use App\Models\Chapter;
-use App\Models\Category;
-use App\Models\Tag;
 use App\Models\Fandom;
 use App\Models\Rating;
-use App\Models\Language;
+use App\Models\Chapter;
 use App\Models\Warning;
+use App\Models\Category;
+use App\Models\Language;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class WorkController extends Controller
 {
@@ -82,37 +83,76 @@ class WorkController extends Controller
     ]);
   }
 
+  public function transformInput($input){
+    $transformedInput = nl2br($input);
+    $transformedInput = '<p>' . str_replace(array('<br />', '<br>'), '</p><p>', $transformedInput) . '</p>';
+    return $transformedInput;
+  }
+
   // Handles Work submission and storage in database
   public function store(Request $request){
     // dd($request->all());
-    $workInput = $request->validate([
-      'title' => ['required', 'min:1', 'max:255'],
+    $formFields = $request->validate([
+      'title' => ['required', 'max:255'],
       'privacy' => 'required',
       'commenting_rule' => 'required',
       'language_code' => 'required',
       'rating_id' => 'required',
-    ]);
-
-    $chapterInput = $request->validate([
       'content' => ['required', 'min:200', 'max:500000'],
       'summary' => ['required', 'min:5', 'max:1250'],
       'beginning_notes' => 'max:5000',
       'end_notes' => 'max:5000',
-    ]);
-
-    $tagInputs = $request->validate([
       'warnings' => 'required',
-      'fandoms' => 'required',
+      'fandoms' => ['required', 'integer'],
       'categories' => 'required',
     ]);
 
-    // $otherTags = [
-    //   'relationships',
-    //   'characters',
-    //   'additional_tags',
-    // ];
+    $work = Work::create([
+      'title' => $formFields['title'],
+      'creator_id' => 1, // Will need to change this to the logged-in user once registration is finalized
+      'privacy' => $formFields['privacy'],
+      'is_complete' => $request->input('expected_chapter_count') == 1 ? 1 : 0,
+      'expected_chapter_count' => $request->input('expected_chapter_count'),
+      'commenting_rule' => $formFields['commenting_rule'],
+      'is_comment_moderated' => $request->input('is_comment_moderated') ? 1 : 0,
+      'word_count' => str_word_count($formFields['content']),
+      'language_code' => $formFields['language_code'],
+      'rating_id' => $formFields['rating_id'],
+      'completed_at' => $request->input('expected_chapter_count') == 1 ? now() : null,
+    ]);
 
-    return redirect('/');
+    $transformedContent = $this->transformInput($formFields['content']);
+
+    $chapter = Chapter::create([
+      'work_id' => $work->id,
+      'position' => 1,
+      'content' => $transformedContent,
+      'summary' => $formFields['summary'],
+      'beginning_notes' => $formFields['beginning_notes'],
+      'end_notes' => $formFields['end_notes'],
+      'word_count' => str_word_count($formFields['content']),
+      'is_published' => $work->privacy == 'private' ? 0 : 1,
+      'published_at' => $work->privacy == 'private' ? null : now(),
+    ]);
+
+    $work->warnings()->attach($formFields['warnings']);
+    $work->categories()->attach($formFields['categories']);
+    $work->fandoms()->attach($formFields['fandoms'], ['is_major' => 1]);
+
+    // This will check the received tags and include them in the tags array to be attached if it is not null
+    $tags = array_filter([
+      $request->input('relationships'),
+      $request->input('characters'),
+      $request->input('additional_tags'),
+    ]);
+    if(!empty($tags)){
+      $work->tags()->attach($tags);
+    }
+
+    // Session::flash('success', 'Work created successfully');
+
+    return redirect()->route('new-work.show', ['work_id' => $work->id, 'chapter_position' => 1])
+      ->with('success', 'Work created successfully');
   }
 
   // Shows the form for editing Work

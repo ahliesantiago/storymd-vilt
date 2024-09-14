@@ -14,14 +14,14 @@
               <input type="text" name="title" id="title" />
               <p class="text-sm mt-1 flex justify-between">
                 @error('title')
-                  <span class="text-red-500">{{ $message }}</span>                
+                <span class="text-red-500">{{ $message }}</span>                
                 @enderror
                 <span class="mr-3 ml-auto">255 characters left</span>
               </p>
             </td>
           </tr>
           <tr>
-            <td><label for="expected_chapter_count">Estimate number of chapters</label></td>
+            <td><label for="expected_chapter_count">Estimate number of Chapters</label></td>
             <td><input type="number" name="expected_chapter_count" id="expected_chapter_count" /></td>
           </tr>
           <tr>
@@ -30,7 +30,7 @@
               <textarea name="summary" id="summary" rows="5" class="w-full resize-none"></textarea>
               <p class="text-sm mt-1 flex justify-between">
                 @error('summary')
-                  <span class="text-red-500">{{ $message }}</span>                
+                <span class="text-red-500">{{ $message }}</span>                
                 @enderror
                 <span class="mr-3 ml-auto">1,250 characters left</span>
               </p>
@@ -62,12 +62,12 @@
             <td>
               <select name="language_code" id="language_code">
                 @foreach($languages as $language)
-                  <option
-                    value="{{$language['language_code']}}"
-                    @if ($language['language_code'] == 'en') selected @endif
-                  >
-                    {{$language['language_name']}}
-                  </option>
+                <option
+                  value="{{$language['language_code']}}"
+                  @if ($language['language_code'] == 'en') selected @endif
+                >
+                  {{$language['language_name']}}
+                </option>
                 @endforeach
               </select>
             </td>
@@ -83,7 +83,7 @@
             <td>
               <select name="rating_id" id="rating_id">
                 @foreach($ratings as $rating)
-                  <option value="{{$rating['id']}}">{{$rating['rating_name']}}</option>
+                <option value="{{$rating['id']}}">{{$rating['rating_name']}}</option>
                 @endforeach
               </select>
             </td>
@@ -94,18 +94,18 @@
               <div class="options">
                 <ul>
                   @foreach($warnings as $warning)
-                    <li>
-                      <label>
-                        <input
-                          type="checkbox"
-                          class="ml-1"
-                          name="warnings[]"
-                          value="{{$warning['id']}}"
-                          @if ($warning['id'] == 1) checked @endif
-                        >
-                        {{$warning['warning_name']}}
-                      </label>
-                    </li>
+                  <li>
+                    <label>
+                      <input
+                        type="checkbox"
+                        class="ml-1"
+                        name="warnings[]"
+                        value="{{$warning['id']}}"
+                        @if ($warning['id'] == 1) checked @endif
+                      >
+                      {{$warning['warning_name']}}
+                    </label>
+                  </li>
                   @endforeach
                 </ul>
               </div>
@@ -113,7 +113,19 @@
           </tr>
           <tr>
             <td><label for="fandoms">Fandoms</label></td>
-            <td><input type="search" name="fandoms" id="fandoms" /></td>
+            <td>
+              <select name="fandoms" id="fandoms">
+                <option disabled selected>Select a fandom</option>
+                @foreach ($fandoms as $fandom)
+                <option value={{$fandom['id']}}>{{$fandom['fandom_name']}}</option>
+                @endforeach
+              </select>
+              @error('fandoms')
+              <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+              @enderror
+              {{-- Select is temporary, will be changed to a search that will allow multi-selection once front-end framework is used --}}
+              {{-- <input type="search" name="fandoms" id="fandoms" /> --}}
+            </td>
           </tr>
           <tr>
             <td>Categories</td>
@@ -121,33 +133,60 @@
               <div class="options">
                 <ul>
                   @foreach($categories as $category)
-                    <li>
-                      <label>
-                        <input
-                          type="checkbox"
-                          class="ml-1"
-                          name="categories[]"
-                          value="{{$category['id']}}"
-                          @if ($category['id'] == 5) checked @endif
-                        >
-                        {{$category['category_name']}}
-                      </label>
-                    </li>
+                  <li>
+                    <label>
+                      <input
+                        type="checkbox"
+                        class="ml-1"
+                        name="categories[]"
+                        value="{{$category['id']}}"
+                        @if ($category['id'] == 5) checked @endif
+                      >
+                      {{$category['category_name']}}
+                    </label>
+                  </li>
                   @endforeach
                 </ul>
               </div>
           </tr>
           <tr>
             <td><label for="relationships">Relationships</label></td>
-            <td><input type="search" name="relationships" id="relationships" /></td>
+            <td>
+              <select name="relationships" id="relationships">
+                <option disabled selected>Select a relationship</option>
+                @foreach ($relationships as $relationship)
+                <option value={{$relationship['id']}}>{{$relationship['tag_name']}}</option>
+                @endforeach
+              </select>
+              {{-- Select is temporary, will be changed to a search that will allow multi-selection once front-end framework is used --}}
+              {{-- <input type="search" name="relationships" id="relationships" /> --}}
+            </td>
           </tr>
           <tr>
             <td><label for="characters">Characters</label></td>
-            <td><input type="search" name="characters" id="characters" /></td>
+            <td>
+              <select name="characters" id="characters">
+                <option disabled selected>Select a character</option>
+                @foreach ($characters as $character)
+                <option value={{$character['id']}}>{{$character['tag_name']}}</option>
+                @endforeach
+              </select>
+              {{-- Select is temporary, will be changed to a search that will allow multi-selection once front-end framework is used --}}
+              {{-- <input type="search" name="characters" id="characters" /> --}}
+            </td>
           </tr>
           <tr>
             <td><label for="additional_tags">Additional Tags</label></td>
-            <td><input type="search" name="additional_tags" id="additional_tags" /></td>
+            <td>
+              <select name="additional_tags" id="additional_tags">
+                <option disabled selected>Select additional tags</option>
+                @foreach ($additional_tags as $tag)
+                <option value={{$tag['id']}}>{{$tag['tag_name']}}</option>
+                @endforeach
+              </select>
+              {{-- Select is temporary, will be changed to a search that will allow multi-selection once front-end framework is used --}}
+              {{-- <input type="search" name="additional_tags" id="additional_tags" /> --}}
+            </td>
           </tr>
         </table>
       </div>
@@ -160,15 +199,15 @@
             <td>
               <div class="options">
                 <div>
-                  <input type="radio" checked name="privacy" id="public_viewing" />
+                  <input type="radio" checked name="privacy" value="public" id="public_viewing" />
                   <label for="public_viewing">Public</label>
                 </div>
                 <div>
-                  <input type="radio" name="privacy" id="registered_only_viewing" />
+                  <input type="radio" name="privacy" value="registered_only" id="registered_only_viewing" />
                   <label for="registered_only_viewing">Only show to registered users</label>
                 </div>
                 <div>
-                  <input type="radio" name="privacy" id="private" />
+                  <input type="radio" name="privacy" value="private" id="private" />
                   <label for="private">Private</label>
                 </div>
               </div>
@@ -183,15 +222,15 @@
               </div>
               <div class="options mt-2">
                 <div>
-                  <input type="radio" name="commenting_rule" id="public_commenting" />
+                  <input type="radio" name="commenting_rule" value="public" id="public_commenting" />
                   <label for="public_commenting">Registered users and guests can comment</label>
                 </div>
                 <div>
-                  <input type="radio" checked name="commenting_rule" id="registered_only_commenting" />
+                  <input type="radio" checked name="commenting_rule" value="registered_only" id="registered_only_commenting" />
                   <label for="registered_only_commenting">Only registered users can comment</label>
                 </div>
                 <div>
-                  <input type="radio" name="commenting_rule" id="off" />
+                  <input type="radio" name="commenting_rule" value="off" id="off" />
                   <label for="off">No one can comment</label>
                 </div>
               </div>
@@ -205,7 +244,7 @@
         <textarea class="mt-10 w-full border-r-" name="content" id="content" rows="30"></textarea>
         <p class="text-sm mt-1 flex justify-between">
           @error('content')
-            <span class="text-red-500">{{ $message }}</span>                
+          <span class="text-red-500">{{ $message }}</span>                
           @enderror
           <span class="mr-3 ml-auto">500,000 characters left</span>
         </p>

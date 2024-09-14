@@ -12,6 +12,12 @@ should be 404
   @vite('resources/css/work.css')
 @endsection
 
+@if(session('success'))
+  <div class="text-center mt-1 py-1 bg-blue-400 border border-blue-600 text-white">
+    {{ session('success') }}
+  </div>
+@endif
+
   <div class="work">
     <div class="nav-buttons text-center">
       @if ($chapter_count > 1)
