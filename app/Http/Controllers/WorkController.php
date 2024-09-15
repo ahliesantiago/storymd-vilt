@@ -149,8 +149,6 @@ class WorkController extends Controller
       $work->tags()->attach($tags);
     }
 
-    // Session::flash('success', 'Work created successfully');
-
     return redirect()->route('new-work.show', ['work_id' => $work->id, 'chapter_position' => 1])
       ->with('success', 'Work created successfully');
   }

@@ -8,6 +8,7 @@
   @vite('resources/css/app.css')
   @vite('resources/css/nav.css')
   @yield('styles')
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
 </head>
 <body>
   <nav>

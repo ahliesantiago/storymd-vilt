@@ -13,7 +13,10 @@ should be 404
 @endsection
 
 @if(session('success'))
-  <div class="text-center mt-1 py-1 bg-blue-400 border border-blue-600 text-white">
+  <div
+    class="text-center mt-1 py-1 bg-blue-400 border border-blue-600 text-white"
+    x-data="{show: true}" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+  >
     {{ session('success') }}
   </div>
 @endif
