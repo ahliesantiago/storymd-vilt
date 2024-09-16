@@ -20,7 +20,7 @@ class WorkController extends Controller
   // Fetch and show all works
   public function index(){
     return view('works.index', [
-      'works' => Work::latest()->get(),
+      'works' => Work::latest()->paginate(20),
       'type' => "browse"
     ]);
   }
@@ -48,7 +48,8 @@ class WorkController extends Controller
 
     return view('works.index', [
       'works' => Work::latest()
-        ->filter(['tag' => $escapedTag])->get(),
+        ->filter(['tag' => $escapedTag])->paginate(20),
+      'total_works' => Work::latest()->filter(['tag' => $escapedTag])->count(),
       'type' => "tags",
       'tag' => $tag
     ]);
@@ -58,7 +59,8 @@ class WorkController extends Controller
     $search_query = $request->input('work_search.query');
     return view('works.index', [
       'works' => Work::latest()
-        ->filter(['search' => $search_query])->get(),
+        ->filter(['search' => $search_query])->paginate(20)->appends(['work_search[query]' => $search_query]),
+      'total_works' => Work::latest()->filter(['search' => $search_query])->count(),
       'type' => "search",
       'search_query' => $search_query,
     ]);
