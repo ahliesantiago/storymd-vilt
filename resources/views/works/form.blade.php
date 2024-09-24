@@ -1,41 +1,57 @@
-<x-layout :title="'New Work | StoryMD'">
+<x-layout :title="$type == 'create' ? 'New Work' : 'Edit Work' . ' | StoryMD'">
   <div class="px-10 py-8">
-    <h2 class="text-4xl font-serif mb-1">Post New Work</h2>
-
-    <form action="/works" method="post">
+    <h2 class="text-4xl font-serif mb-1">
+      {{ $type == 'create'
+        ? "Post New Work"
+        : "Edit '$work->title'"
+      }}
+    </h2>
+    
+    <form action="/works{{ isset($work) ? '/' . $work->id : '' }}" method="POST" enctype="multipart/form-data">
       @csrf
-
+      @if ($type == 'edit') @method('PUT') @endif
       <div class="table-form bg-neutral-300">
         <h3 class="creation-type">Preface</h3>
         <table>
           <tr>
             <td><label for="title">Work Title</label></td>
             <td>
-              <input type="text" name="title" id="title" value="{{old('title')}}" />
+              <input type="text" name="title" id="title" value="{{ $work->title ?? old('title') }}" />
               <p class="text-sm mt-1 flex justify-between">
                 @error('title')
-                <span class="text-red-500">{{ $message }}</span>                
+                <span class="text-red-500">{{ $message }}</span>
                 @enderror
                 <span class="mr-3 ml-auto">255 characters left</span>
               </p>
             </td>
           </tr>
           <tr>
-            <td><label for="expected_chapter_count">Estimate number of Chapters</label></td>
-            <td><input type="number" name="expected_chapter_count" id="expected_chapter_count" value="{{old('expected_chapter_count')}}" /></td>
+            <td><label for="expected_chapter_count">Estimate number of chapters</label></td>
+            <td><input type="number" name="expected_chapter_count" id="expected_chapter_count" value="{{$work->expected_chapter_count ?? old('expected_chapter_count')}}" /></td>
           </tr>
           <tr>
             <td><label for="summary">Summary</label></td>
             <td>
-              <textarea name="summary" id="summary" rows="5" class="w-full resize-none">{{old('summary')}}</textarea>
+              {{-- <textarea name="summary" id="summary" rows="5" class="w-full resize-none">{{old('summary')}}</textarea> --}}
+              <textarea name="summary" id="summary" rows="5" class="w-full resize-none">{{isset($work) ? $work->chapters->first()->summary : old('summary')}}</textarea>
               <p class="text-sm mt-1 flex justify-between">
                 @error('summary')
-                <span class="text-red-500">{{ $message }}</span>                
+                <span class="text-red-500">{{ $message }}</span>
                 @enderror
                 <span class="mr-3 ml-auto">1,250 characters left</span>
               </p>
             </td>
           </tr>
+          <tr>
+            <td><label for="cover_image">Cover image</label></td>
+            <td>
+              <input type="file" name="cover_image">
+              @if (isset($work) && $work->cover_image)
+                <img class="mt-2" src="{{ asset('storage/' . $work->cover_image) }}" />
+              @endif
+            </td>
+          </tr>
+          @if ($type == 'create')
           <tr>
             <td>Notes</td>
             <td>
@@ -57,14 +73,21 @@
               </div>
             </td>
           </tr>
+          @endif
           <tr>
             <td><label for="language_code">Language</label></td>
             <td>
               <select name="language_code" id="language_code">
-                @foreach($languages as $language)
+                @foreach ($languages as $language)
                 <option
-                  value="{{$language['language_code']}}"
-                  @if ($language['language_code'] == 'en') selected @endif
+                  value={{$language['language_code']}}
+                  @if (
+                    !isset($work) && $language['language_code'] == 'en' && empty(old('language_code'))
+                    || $language['language_code'] == old('language_code')
+                    || isset($work) && $language['language_code'] == $work->language_code
+                  )
+                    selected
+                  @endif
                 >
                   {{$language['language_name']}}
                 </option>
@@ -83,7 +106,18 @@
             <td>
               <select name="rating_id" id="rating_id">
                 @foreach($ratings as $rating)
-                <option value="{{$rating['id']}}">{{$rating['rating_name']}}</option>
+                <option
+                  value={{$rating['id']}}
+                  @if (
+                    !isset($work) && $rating['id'] == 'en' && empty(old('rating_id'))
+                    || $rating['id'] == old('rating_id')
+                    || isset($work) && $rating['id'] == $work->rating->id
+                  )
+                    selected
+                  @endif
+                >
+                  {{$rating['rating_name']}}
+                </option>
                 @endforeach
               </select>
             </td>
@@ -101,8 +135,13 @@
                         class="ml-1"
                         name="warnings[]"
                         value="{{$warning['id']}}"
-                        @if ($warning['id'] == 1 && (empty(old('warnings')))) checked @endif
-                        {{ in_array($warning['id'], old('warnings', [])) ? 'checked' : '' }}
+                        @if (
+                          !isset($work) && $warning['id'] == 1 && empty(old('warnings'))
+                          || in_array($warning['id'], old('warnings', []))
+                          || isset($work) && in_array($warning['id'], $work->warnings->pluck('id')->toArray())
+                        )
+                          checked
+                        @endif
                       >
                       {{$warning['warning_name']}}
                     </label>
@@ -116,9 +155,19 @@
             <td><label for="fandoms">Fandoms</label></td>
             <td>
               <select name="fandoms" id="fandoms">
-                <option disabled {{ old('fandoms') == null ? 'selected' : '' }}>Select a fandom</option>
+                <option disabled {{ !isset($work) && old('fandoms') == null ? 'selected' : '' }}>Select a fandom</option>
                 @foreach ($fandoms as $fandom)
-                <option value={{$fandom['id']}} {{ old('fandoms') == $fandom['id'] ? 'selected' : '' }}>{{$fandom['fandom_name']}}</option>
+                <option
+                  value={{$fandom['id']}} {{ old('fandoms') == $fandom['id'] ? 'selected' : '' }}
+                  @if (
+                    $fandom['id'] == old('fandoms')
+                    || isset($work) && in_array($fandom['id'], $work->fandoms->pluck('id')->toArray())
+                  )
+                    selected
+                  @endif
+                >
+                  {{$fandom['fandom_name']}}
+                </option>
                 @endforeach
               </select>
               @error('fandoms')
@@ -141,8 +190,13 @@
                         class="ml-1"
                         name="categories[]"
                         value="{{$category['id']}}"
-                        @if ($category['id'] == 5 && (empty(old('categories')))) checked @endif
-                        {{ in_array($category['id'], old('categories', [])) ? 'checked' : '' }}
+                        @if (
+                          !isset($work) && $category['id'] == 5 && empty(old('categories'))
+                          || in_array($category['id'], old('categories', []))
+                          || isset($work) && in_array($category['id'], $work->categories->pluck('id')->toArray())
+                        )
+                          checked
+                        @endif
                       >
                       {{$category['category_name']}}
                     </label>
@@ -159,9 +213,19 @@
             <td><label for="relationships">Relationships</label></td>
             <td>
               <select name="relationships" id="relationships">
-                <option disabled {{ old('relationships') == null ? 'selected' : '' }}>Select a relationship</option>
+                <option disabled {{ !isset($work) && old('relationships') == null ? 'selected' : '' }}>Select a relationship</option>
                 @foreach ($relationships as $relationship)
-                <option value={{$relationship['id']}} {{ old('relationships') == $relationship['id'] ? 'selected' : '' }}>{{$relationship['tag_name']}}</option>
+                <option
+                  value={{$relationship['id']}} {{ old('relationships') == $relationship['id'] ? 'selected' : '' }}
+                  @if (
+                    $relationship['id'] == old('relationships')
+                    || isset($work) && in_array($relationship['id'], $work->tags->pluck('id')->toArray())
+                  )
+                    selected
+                  @endif
+                >
+                  {{$relationship['tag_name']}}
+                </option>
                 @endforeach
               </select>
               {{-- Select is temporary, will be changed to a search that will allow multi-selection once front-end framework is used --}}
@@ -172,9 +236,19 @@
             <td><label for="characters">Characters</label></td>
             <td>
               <select name="characters" id="characters">
-                <option disabled {{ old('characters') == null ? 'selected' : '' }}>Select a character</option>
+                <option disabled {{ !isset($work) && old('characters') == null ? 'selected' : '' }}>Select a character</option>
                 @foreach ($characters as $character)
-                <option value={{$character['id']}} {{ old('characters') == $character['id'] ? 'selected' : '' }}>{{$character['tag_name']}}</option>
+                <option
+                  value={{$character['id']}} {{ old('characters') == $character['id'] ? 'selected' : '' }}
+                  @if (
+                    $character['id'] == old('characters')
+                    || isset($work) && in_array($character['id'], $work->tags->pluck('id')->toArray())
+                  )
+                    selected
+                  @endif
+                >
+                  {{$character['tag_name']}}
+                </option>
                 @endforeach
               </select>
               {{-- Select is temporary, will be changed to a search that will allow multi-selection once front-end framework is used --}}
@@ -185,9 +259,19 @@
             <td><label for="additional_tags">Additional Tags</label></td>
             <td>
               <select name="additional_tags" id="additional_tags">
-                <option disabled {{ old('additional_tags') == null ? 'selected' : '' }}>Select additional tags</option>
+                <option disabled {{ !isset($work) && old('additional_tags') == null ? 'selected' : '' }}>Select additional tags</option>
                 @foreach ($additional_tags as $tag)
-                <option value={{$tag['id']}} {{ old('additional_tags') == $tag['id'] ? 'selected' : '' }}>{{$tag['tag_name']}}</option>
+                <option
+                  value={{$tag['id']}} {{ old('additional_tags') == $tag['id'] ? 'selected' : '' }}
+                  @if (
+                    $tag['id'] == old('additional_tags')
+                    || isset($work) && in_array($tag['id'], $work->tags->pluck('id')->toArray())
+                  )
+                    selected
+                  @endif
+                >
+                  {{$tag['tag_name']}}
+                </option>
                 @endforeach
               </select>
               {{-- Select is temporary, will be changed to a search that will allow multi-selection once front-end framework is used --}}
@@ -245,23 +329,25 @@
         </table>
       </div>
 
+      @if ($type == 'create')
       <div class="table-form bg-neutral-300 p-6">
         <h3 class="creation-type">Work Content</h3>
         <textarea class="mt-10 w-full" name="content" id="content" rows="30">{{old('content')}}</textarea>
         <p class="text-sm mt-1 flex justify-between">
           @error('content')
-          <span class="text-red-500">{{ $message }}</span>                
+          <span class="text-red-500">{{ $message }}</span>
           @enderror
           <span class="mr-3 ml-auto">500,000 characters left</span>
         </p>
       </div>
+      @endif
 
       <div class="text-right pr-4">
         <button class="border border-red-500 bg-transparent">Cancel</button>
         <button class="border border-red-500 bg-transparent">Reset</button>
         <button class="border border-sky-500 bg-transparent">Save as Draft</button>
         <button class="bg-sky-600 border text-white">Preview</button>
-        <button class="bg-sky-700 text-white">Post</button>
+        <button class="bg-sky-700 text-white">{{ $type == 'create' ? 'Post' : 'Update' }}</button>
       </div>
     </form>
   </div>

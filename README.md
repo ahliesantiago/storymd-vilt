@@ -4,7 +4,7 @@ An [Archive of Our Own (AO3)](https://archiveofourown.org/) clone, StoryMd ("Sto
 # Technology
 Tools used to build this app include:
 - Laravel, MAMP (Apache, MySQL, PHP), Nginx via Valet
-- Tailwind CSS, Ant Design
+- Tailwind CSS, Ant Design, Alpine.js
 <!-- (later) -->
 <!-- - VILT stack (Vue.js, Inertia, Laravel, Tailwind CSS) -->
 <!-- - Laravel Valet, Docker with Laravel Sail, Redis or PostgreSQL -->

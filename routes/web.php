@@ -21,6 +21,10 @@ Route::get('/works/create', [WorkController::class, 'create']);
 
 Route::post('/works', [WorkController::class, 'store']);
 
+Route::get('/works/{work}/edit', [WorkController::class, 'edit']);
+
+Route::put('/works/{work}', [WorkController::class, 'update']);
+
 Route::get('/works/search', [WorkController::class, 'search']);
 
 Route::get('/works/tags/{tag}', [WorkController::class, 'tags']);

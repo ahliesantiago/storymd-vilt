@@ -73,7 +73,8 @@ class WorkController extends Controller
 
   // Shows the form for Work creation
   public function create(){
-    return view('works.create', [
+    return view('works.form', [
+      'type' => "create",
       'languages' => Language::all(),
       'ratings' => Rating::all(),
       'warnings' => Warning::all(),
@@ -93,7 +94,6 @@ class WorkController extends Controller
 
   // Handles Work submission and storage in database
   public function store(Request $request){
-    // dd($request->all());
     $formFields = $request->validate([
       'title' => ['required', 'max:255'],
       'privacy' => 'required',
@@ -109,8 +109,13 @@ class WorkController extends Controller
       'categories' => 'required',
     ]);
 
+    if($request->hasFile('cover_image')){
+      $formFields['cover_image'] = $request->file('cover_image')->store('covers', 'public');
+    }
+
     $work = Work::create([
       'title' => $formFields['title'],
+      'cover_image' => $formFields['cover_image'] ?? null,
       'creator_id' => 1, // Will need to change this to the logged-in user once registration is finalized
       'privacy' => $formFields['privacy'],
       'is_complete' => $request->input('expected_chapter_count') == 1 ? 1 : 0,
@@ -156,13 +161,26 @@ class WorkController extends Controller
   }
 
   // Shows the form for editing Work
-  public function edit(){
-
+  public function edit(Work $work){
+    // dd($work);
+    return view('works.form', [
+      'type' => "edit",
+      'work' => $work,
+      
+      'languages' => Language::all(),
+      'ratings' => Rating::all(),
+      'warnings' => Warning::all(),
+      'fandoms' => Fandom::all(),
+      'categories' => Category::all(),
+      'relationships' => Tag::where('type', 'relationship')->get(),
+      'characters' => Tag::where('type', 'character')->get(),
+      'additional_tags' => Tag::where('type', 'additional')->get(),
+    ]);
   }
 
   // Handles edit form submission and actual update of Work record in the database
-  public function update(){
-
+  public function update(Request $request){
+    dd($request);
   }
 
   // Handles deletion of a Work from the database

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('works', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('cover_image')->nullable();
             $table->foreignId('creator_id')->nullable()->constrained(table: 'users', indexName: 'id')->onDelete('set null');
             $table->boolean('privacy')->default('public');
             $table->boolean('is_complete')->default(false);

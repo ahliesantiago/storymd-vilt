@@ -23,6 +23,7 @@ should be 404
 
   <div class="work">
     <div class="nav-buttons text-center">
+      <button><a href="/works/{{$work->id}}/edit">Edit</a></button>
       @if ($chapter_count > 1)
         @if($chapter_position == 'all')
           <button>Chapter by Chapter</button>
@@ -106,6 +107,9 @@ should be 404
     </x-card>
   
     <aside class="mx-10">
+      @if ($chapter['position'] == 1 && $work->cover_image)
+        <img class="w-40 h-64 float-right" src="{{ asset('storage/' . $work->cover_image) }}" />
+      @endif
       <h1 class="text-3xl text-center mt-6">{{ $work->title }}</h1>
       <h2 class="text-xl text-center mb-3">{{ $work['creator_id'] ? $work->creator->username : 'Anonymous' }}</h2>
       <hr>
@@ -117,7 +121,7 @@ should be 404
       <h3 class="text-xl">Summary:</h3>
       <hr>
       <p class="my-3">{{ $chapter['summary'] }}</p>
-    
+
       @if ($chapter['beginning_notes'])
         <h3 class="text-xl">Notes:</h3>
         <hr>
