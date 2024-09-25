@@ -1,11 +1,25 @@
 <x-layout :title="$type == 'create' ? 'New Work' : 'Edit Work' . ' | StoryMD'">
   <div class="px-10 py-8">
-    <h2 class="text-4xl font-serif mb-1">
-      {{ $type == 'create'
-        ? "Post New Work"
-        : "Edit '$work->title'"
-      }}
-    </h2>
+    <div class="flex justify-between items-start">
+      <h2 class="text-4xl font-serif mb-1">
+        @if ($type == 'create')
+          Post New Work
+        @elseif($type == 'edit')
+          Edit '{{ $work->title }}'          
+        @endif
+      </h2>
+      @if ($type == 'edit')
+        <div>
+          <button class="bg-transparent px-4 py-2 mt-0">Add Chapter</button>
+          <button class="bg-transparent px-4 py-2 mt-0">Manage Chapters</button>
+          <form action="/works/{{$work->id}}" method="POST" class="inline-block">
+            @csrf
+            @method('DELETE')
+            <button class="text-red-500 bg-transparent px-4 py-2 mt-0">Delete Work</button>
+          </form>
+        </div>
+      @endif
+    </div>
     
     <form action="/works{{ isset($work) ? '/' . $work->id : '' }}" method="POST" enctype="multipart/form-data">
       @csrf
@@ -27,7 +41,12 @@
           </tr>
           <tr>
             <td><label for="expected_chapter_count">Estimate number of chapters</label></td>
-            <td><input type="number" name="expected_chapter_count" id="expected_chapter_count" value="{{$work->expected_chapter_count ?? old('expected_chapter_count')}}" /></td>
+            <td>
+              <input type="number" name="expected_chapter_count" id="expected_chapter_count" value="{{$work->expected_chapter_count ?? old('expected_chapter_count')}}" />
+              @error('expected_chapter_count')
+              <span class="text-red-500">{{ $message }}</span>
+              @enderror
+            </td>
           </tr>
           <tr>
             <td><label for="summary">Summary</label></td>
@@ -49,6 +68,9 @@
               @if (isset($work) && $work->cover_image)
                 <img class="mt-2" src="{{ asset('storage/' . $work->cover_image) }}" />
               @endif
+              @error('cover_image')
+              <span class="text-red-500">{{ $message }}</span>
+              @enderror
             </td>
           </tr>
           @if ($type == 'create')
@@ -93,6 +115,9 @@
                 </option>
                 @endforeach
               </select>
+              @error('language_code')
+              <span class="text-red-500">{{ $message }}</span>
+              @enderror
             </td>
           </tr>
         </table>
@@ -149,6 +174,9 @@
                   @endforeach
                 </ul>
               </div>
+              @error('warnings')
+              <span class="text-red-500">{{ $message }}</span>
+              @enderror
             </td>
           </tr>
           <tr>
@@ -213,7 +241,7 @@
             <td><label for="relationships">Relationships</label></td>
             <td>
               <select name="relationships" id="relationships">
-                <option disabled {{ !isset($work) && old('relationships') == null ? 'selected' : '' }}>Select a relationship</option>
+                <option disabled {{ isset($work) && $work->tags()->count() == 0 || !isset($work) && old('relationships') == null ? 'selected' : '' }}>Select a relationship</option>
                 @foreach ($relationships as $relationship)
                 <option
                   value={{$relationship['id']}} {{ old('relationships') == $relationship['id'] ? 'selected' : '' }}
@@ -228,6 +256,9 @@
                 </option>
                 @endforeach
               </select>
+              @error('relationships')
+              <span class="text-red-500">{{ $message }}</span>
+              @enderror
               {{-- Select is temporary, will be changed to a search that will allow multi-selection once front-end framework is used --}}
               {{-- <input type="search" name="relationships" id="relationships" /> --}}
             </td>
@@ -236,7 +267,7 @@
             <td><label for="characters">Characters</label></td>
             <td>
               <select name="characters" id="characters">
-                <option disabled {{ !isset($work) && old('characters') == null ? 'selected' : '' }}>Select a character</option>
+                <option disabled {{ isset($work) && $work->tags()->count() == 0 || !isset($work) && old('characters') == null ? 'selected' : '' }}>Select a character</option>
                 @foreach ($characters as $character)
                 <option
                   value={{$character['id']}} {{ old('characters') == $character['id'] ? 'selected' : '' }}
@@ -251,6 +282,9 @@
                 </option>
                 @endforeach
               </select>
+              @error('characters')
+              <span class="text-red-500">{{ $message }}</span>
+              @enderror
               {{-- Select is temporary, will be changed to a search that will allow multi-selection once front-end framework is used --}}
               {{-- <input type="search" name="characters" id="characters" /> --}}
             </td>
@@ -259,7 +293,7 @@
             <td><label for="additional_tags">Additional Tags</label></td>
             <td>
               <select name="additional_tags" id="additional_tags">
-                <option disabled {{ !isset($work) && old('additional_tags') == null ? 'selected' : '' }}>Select additional tags</option>
+                <option disabled {{ isset($work) && $work->tags()->count() == 0 || !isset($work) && old('additional_tags') == null ? 'selected' : '' }}>Select additional tags</option>
                 @foreach ($additional_tags as $tag)
                 <option
                   value={{$tag['id']}} {{ old('additional_tags') == $tag['id'] ? 'selected' : '' }}
@@ -274,6 +308,9 @@
                 </option>
                 @endforeach
               </select>
+              @error('additional_tags')
+              <span class="text-red-500">{{ $message }}</span>
+              @enderror
               {{-- Select is temporary, will be changed to a search that will allow multi-selection once front-end framework is used --}}
               {{-- <input type="search" name="additional_tags" id="additional_tags" /> --}}
             </td>
@@ -287,6 +324,9 @@
           <tr>
             <td>Story visibility</td>
             <td>
+              @error('privacy')
+              <span class="text-red-500">{{ $message }}</span>
+              @enderror
               <div class="options">
                 <div>
                   <input type="radio" name="privacy" value="public" id="public_viewing" {{ old('privacy') == "public" || old('privacy') == null ? 'checked' : '' }} />
@@ -306,6 +346,9 @@
           <tr>
             <td>Commenting options</td>
             <td>
+              @error('commenting_rule' || 'is_comment_moderated')
+              <span class="text-red-500">{{ $message }}</span>
+              @enderror
               <div>
                 <input type="checkbox" class="ml-2 mr-1" name="is_comment_moderated" id="is_comment_moderated" {{ old('is_comment_moderated') == "on" ? 'checked' : '' }} />
                 <label for="is_comment_moderated">Enable comment moderation</label>

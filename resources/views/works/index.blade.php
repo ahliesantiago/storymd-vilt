@@ -1,4 +1,12 @@
 <x-layout :title="'Browse | StoryMD'">
+  @if(session('success'))
+    <div
+      class="text-center mt-1 py-1 bg-blue-400 border border-blue-600 text-white"
+      x-data="{show: true}" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+    >
+      {{ session('success') }}
+    </div>
+  @endif
   <div class="px-10 py-8">
     @if ($type == 'search')
       <h2 class="text-4xl font-serif mb-1">Search Results for "{{ $search_query }}"</h2>

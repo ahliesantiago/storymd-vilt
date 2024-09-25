@@ -86,6 +86,7 @@ class WorkController extends Controller
     ]);
   }
 
+  // This transforms the input into HTML format.
   public function transformInput($input){
     $transformedInput = nl2br($input);
     $transformedInput = '<p>' . str_replace(array('<br />', '<br>'), '</p><p>', $transformedInput) . '</p>';
@@ -166,7 +167,6 @@ class WorkController extends Controller
     return view('works.form', [
       'type' => "edit",
       'work' => $work,
-      
       'languages' => Language::all(),
       'ratings' => Rating::all(),
       'warnings' => Warning::all(),
@@ -179,12 +179,69 @@ class WorkController extends Controller
   }
 
   // Handles edit form submission and actual update of Work record in the database
-  public function update(Request $request){
-    dd($request);
+  public function update(Request $request, Work $work){
+    // dd($request);
+    $chapter_count = Chapter::where('work_id', $work->id)->count();
+    $formFields = $request->validate([
+      'title' => ['required', 'max:255'],
+      'privacy' => 'required',
+      'expected_chapter_count' => ["nullable", "gte:{$chapter_count}"],
+      'commenting_rule' => 'required',
+      'language_code' => 'required',
+      'rating_id' => 'required',
+      'summary' => ['required', 'min:5', 'max:1250'],
+      'warnings' => 'required',
+      'fandoms' => ['required', 'integer'],
+      'categories' => 'required',
+    ]);
+
+    if($request->hasFile('cover_image')){
+      $work->update([
+        'cover_image' => $request->file('cover_image')->store('covers', 'public'),
+      ]);
+    }
+
+    $work->update([
+      'title' => $formFields['title'],
+      'privacy' => $formFields['privacy'],
+      'is_complete' => $formFields['expected_chapter_count'] == $chapter_count ? 1 : 0,
+      'expected_chapter_count' => $request->input('expected_chapter_count'),
+      'commenting_rule' => $formFields['commenting_rule'],
+      'is_comment_moderated' => $request->input('is_comment_moderated') ? 1 : 0,
+      'language_code' => $formFields['language_code'],
+      'rating_id' => $formFields['rating_id'],
+      'completed_at' => ($formFields['expected_chapter_count'] == $chapter_count && $work->completed_at == null) ? now() : null,
+    ]);
+
+    $work->chapters->first()->update([
+      'summary' => $formFields['summary'],
+    ]);
+
+    $work->warnings()->sync($formFields['warnings']);
+    $work->categories()->sync($formFields['categories']);
+    $work->fandoms()->syncWithoutDetaching($formFields['fandoms']);
+
+    // This will check the received tags and include them in the tags array to be synced if it is not null
+    $tags = array_filter([
+      $request->input('relationships'),
+      $request->input('characters'),
+      $request->input('additional_tags'),
+    ]);
+    if(!empty($tags)){
+      $work->tags()->syncWithoutDetaching($tags);
+    }
+
+    return redirect()->route('new-work.show', ['work_id' => $work->id, 'chapter_position' => 1])
+      ->with('success', 'Work updated successfully');
   }
 
   // Handles deletion of a Work from the database
-  public function destroy(){
-
+  public function destroy(Work $work){
+    $work->warnings()->detach();
+    $work->categories()->detach();
+    $work->tags()->detach();
+    $work->fandoms()->detach();
+    $work->delete();
+    return redirect('/works')->with('success', 'Work deleted successfully');
   }
 }

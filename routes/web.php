@@ -25,6 +25,8 @@ Route::get('/works/{work}/edit', [WorkController::class, 'edit']);
 
 Route::put('/works/{work}', [WorkController::class, 'update']);
 
+Route::delete('/works/{work}', [WorkController::class, 'destroy']);
+
 Route::get('/works/search', [WorkController::class, 'search']);
 
 Route::get('/works/tags/{tag}', [WorkController::class, 'tags']);
