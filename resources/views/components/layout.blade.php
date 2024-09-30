@@ -14,10 +14,13 @@
   <nav>
     <div class='head flex justify-between p-2'>
       <h2 class='text-3xl'><a href="/">StoryMD</a></h2>
-      <div class='w-1/4 flex justify-between'>
-        <a href='/'>Hi, usernamehere!</a>
-        <a href='/works/create'>Post</a>
-        <a href='/'>Log Out</a>
+      {{-- <div class='w-1/4 flex justify-between'> --}}
+      <div class='w-1/6 flex justify-between'>
+        {{-- <a href='/'>Hi, usernamehere!</a>
+        <a href='/works/create'>Post</a> --}}
+        <a href='/login'>Login</a>
+        <a href='/register'>Register</a>
+        {{-- <a href='/'>Log Out</a> --}}
       </div>
     </div>
     <div class='menu flex justify-between items-center ps-6 pe-2 py-1 bg-gradient-to-b from-sky-600 to-sky-950 text-white'>

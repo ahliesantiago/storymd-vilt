@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\WorkController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 // use Inertia\Inertia;
@@ -32,3 +33,9 @@ Route::get('/works/search', [WorkController::class, 'search']);
 Route::get('/works/tags/{tag}', [WorkController::class, 'tags']);
 
 Route::get('/works/{work_id}/chapters/{chapter_position}', [WorkController::class, 'show'])->name('new-work.show');
+
+Route::get('/register', [UserController::class, 'create']);
+
+Route::post('/users', [UserController::class, 'store']);
+
+Route::get('/login', [UserController::class, 'login']);
