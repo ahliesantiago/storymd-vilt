@@ -3,9 +3,10 @@
     <h1 class="text-3xl">
       {{ $type == 'registration' ? 'Registration' : 'Login' }}
     </h1>
-    <form action="/users" method="post">
+    <form action="/users{{ $type == 'login' ? '/authenticate' : '' }}" method="POST">
       @csrf
       <table class='mt-3'>
+        @if ($type == 'registration')
         <tr>
           <td class='min-w-1/3 align-top'>
             <label for="email">E-mail address</label>
@@ -27,7 +28,20 @@
             @enderror
             <input type="text" name="username" id="username" value="{{ old('username') }}" class="border border-black">
           </td>
+        </tr>          
+        @else
+        <tr>
+          <td class='min-w-1/3 align-top'>
+            <label for="login_mode">Email or username</label>
+          </td>
+          <td class='ps-10'>
+            <input type="text" name="login_mode" id="login_mode" value="{{ old('login_mode') }}" class="border border-black">
+            @error('login_mode')
+            <p class="text-red-500">{{ $message }}</p>
+            @enderror
+          </td>
         </tr>
+        @endif
         <tr>
           <td class='min-w-1/3'><label for="password">Password</label></td>
           <td class='ps-10'>
@@ -69,6 +83,9 @@
       <button class="bg-[#eee] rounded-md py-1 px-2.5 m-1 border border-[#999] shadow-[0_1px_1px_0_rgba(187, 187, 187, 1)]" type="submit">
         {{ $type == 'registration' ? 'Register' : 'Login' }}
       </button>
+      @if($type == 'login')
+      <input type="checkbox" /> Remember Me
+      @endif
       <p>
         {{ $type == 'registration' ? 'Already have an account?' : 'Don\'t have an account?' }}
         <a href="{{ $type == 'registration' ? '/login' : '/register' }}" class="text-blue-700">

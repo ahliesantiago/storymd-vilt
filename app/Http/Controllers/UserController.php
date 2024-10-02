@@ -40,14 +40,65 @@ class UserController extends Controller
         ]);
 
         Auth::login($user);
-        // auth()->login($user);
 
-        return redirect('/')->with('message', 'You have successfully registered. Welcome!');
+        return redirect('/')->with('success', 'You have successfully registered. Welcome!');
     }
 
     public function login(){
         return view('users.auth', [
             'type' => 'login'
+        ]);
+    }
+
+    public function authenticate(Request $request){
+        $credentials = filter_var($request->login_mode, FILTER_VALIDATE_EMAIL)
+            ? ['email' => $request->login_mode, 'password' => $request->password]
+            : ['username' => $request->login_mode, 'password' => $request->password];
+        // $formFields = $request->validate([
+        //     'login_mode' => [
+        //         'required',
+        //         'string',
+        //         function($attribute, $value, $fail){
+        //             $exists = User::where('email', $value)->orWhere('username', $value)->exists();
+        //             if(!$exists){
+        //                 $fail('The provided credentials do not match our records.');
+        //             }
+        //         }
+        //     ],
+        //     'password' => 'required',
+        // ], [
+        //     '.required' => 'Please enter your email or username',
+        //     'password.required' => 'Please enter your password'
+        // ]);
+
+        if (in_array(null, $credentials, true)) {
+            return back()->withErrors([
+                'login_mode' => 'Please enter your credentials.'
+            ]);
+        }
+
+        if(Auth::attempt($credentials)){
+            $request->session()->regenerate();
+            return redirect('/')->with('success', 'You are now logged in!');
+        }else{
+            return back()->withErrors([
+                'login_mode' => 'The provided credentials do not match our records.'
+            ]);
+        }
+    }
+
+    public function logout(Request $request){
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'Successfully logged out. See you next time!');
+    }
+
+    public function show($username){
+        $user = User::where('username', $username)->first();
+        return view('users.profile', [
+            'user' => $user
         ]);
     }
 }

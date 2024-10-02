@@ -14,13 +14,19 @@
   <nav>
     <div class='head flex justify-between p-2'>
       <h2 class='text-3xl'><a href="/">StoryMD</a></h2>
-      {{-- <div class='w-1/4 flex justify-between'> --}}
+      @auth
+      <div class='w-1/3 flex justify-between'>
+        Hi, <a href='/users/{{ auth()->user()->username }}'>{{ auth()->user()->username }}</a>!
+        <a href='/works/create'>Post</a>
+        <form class="inline" action="/logout" method="POST">
+          @csrf
+          <button type="submit">Log Out</button>
+        </form>
+      @else
       <div class='w-1/6 flex justify-between'>
-        {{-- <a href='/'>Hi, usernamehere!</a>
-        <a href='/works/create'>Post</a> --}}
         <a href='/login'>Login</a>
         <a href='/register'>Register</a>
-        {{-- <a href='/'>Log Out</a> --}}
+      @endif
       </div>
     </div>
     <div class='menu flex justify-between items-center ps-6 pe-2 py-1 bg-gradient-to-b from-sky-600 to-sky-950 text-white'>
@@ -48,7 +54,7 @@
 
       <form action='/works/search' method='get' class=''>
         <input type='text' name='work_search[query]' class='me-2 px-2 rounded-lg'>
-        <button class="m-0 py-0 px-3">Search</button>
+        <button class="bg-[#eee] rounded-md px-3 border border-[#999] shadow-[0_1px_1px_0_rgba(187, 187, 187, 1)]" type="submit">Search</button>
       </form>
     </div>
   </nav>
