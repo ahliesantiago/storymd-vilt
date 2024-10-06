@@ -28,7 +28,6 @@ class UserController extends Controller
             'birthdate.before_or_equal' => 'You must be at least 13 years old to register'
         ]);
 
-        // password hashing
         $formFields['password'] = bcrypt($formFields['password']);
 
         $user = User::create([
@@ -51,25 +50,16 @@ class UserController extends Controller
     }
 
     public function authenticate(Request $request){
-        $credentials = filter_var($request->login_mode, FILTER_VALIDATE_EMAIL)
-            ? ['email' => $request->login_mode, 'password' => $request->password]
-            : ['username' => $request->login_mode, 'password' => $request->password];
-        // $formFields = $request->validate([
-        //     'login_mode' => [
-        //         'required',
-        //         'string',
-        //         function($attribute, $value, $fail){
-        //             $exists = User::where('email', $value)->orWhere('username', $value)->exists();
-        //             if(!$exists){
-        //                 $fail('The provided credentials do not match our records.');
-        //             }
-        //         }
-        //     ],
-        //     'password' => 'required',
-        // ], [
-        //     '.required' => 'Please enter your email or username',
-        //     'password.required' => 'Please enter your password'
-        // ]);
+        $formFields = $request->validate([
+            'login_mode' => 'required',
+            'password' => 'required'
+        ],[
+            'login_mode.required' => 'Please enter your email or username',
+            'password.required' => 'Please enter your password'
+        ]);
+        $credentials = filter_var($formFields['login_mode'], FILTER_VALIDATE_EMAIL)
+            ? ['email' => $formFields['login_mode'], 'password' => $formFields['password']]
+            : ['username' => $formFields['login_mode'], 'password' => $formFields['password']];
 
         if (in_array(null, $credentials, true)) {
             return back()->withErrors([

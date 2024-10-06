@@ -15,8 +15,10 @@
     <div class='head flex justify-between p-2'>
       <h2 class='text-3xl'><a href="/">StoryMD</a></h2>
       @auth
-      <div class='w-1/3 flex justify-between'>
-        Hi, <a href='/users/{{ auth()->user()->username }}'>{{ auth()->user()->username }}</a>!
+      <div class='w-1/3 max-w-64 flex justify-between'>
+        <span>
+          Hi, <a href='/users/{{ auth()->user()->username }}'>{{ auth()->user()->username }}</a>!
+        </span>
         <a href='/works/create'>Post</a>
         <form class="inline" action="/logout" method="POST">
           @csrf
