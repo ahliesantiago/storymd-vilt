@@ -88,7 +88,8 @@ class UserController extends Controller
     public function show($username){
         $user = User::where('username', $username)->first();
         return view('users.profile', [
-            'user' => $user
+            'user' => $user,
+            'works' => $user->works()->orderBy('created_at', 'desc')->get()
         ]);
     }
 }

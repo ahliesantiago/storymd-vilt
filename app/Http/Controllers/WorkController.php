@@ -116,7 +116,7 @@ class WorkController extends Controller
     $work = Work::create([
       'title' => $formFields['title'],
       'cover_image' => $formFields['cover_image'] ?? null,
-      'creator_id' => 1, // Will need to change this to the logged-in user once registration is finalized
+      'creator_id' => auth()->id(),
       'privacy' => $formFields['privacy'],
       'is_complete' => $request->input('expected_chapter_count') == 1 ? 1 : 0,
       'expected_chapter_count' => $request->input('expected_chapter_count'),

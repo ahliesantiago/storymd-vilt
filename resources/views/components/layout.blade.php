@@ -17,7 +17,7 @@
       @auth
       <div class='w-1/3 max-w-64 flex justify-between'>
         <span>
-          Hi, <a href='/users/{{ auth()->user()->username }}'>{{ auth()->user()->username }}</a>!
+          Hi, <x-dotted-link url="/users/{{auth()->user()->username}}">{{auth()->user()->username}}</x-dotted-link>!
         </span>
         <a href='/works/create'>Post</a>
         <form class="inline" action="/logout" method="POST">

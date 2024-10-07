@@ -10,12 +10,12 @@
       </h2>
       @if ($type == 'edit')
         <div>
-          <button class="bg-transparent px-4 py-2 mt-0">Add Chapter</button>
-          <button class="bg-transparent px-4 py-2 mt-0">Manage Chapters</button>
+          <x-button class="bg-transparent px-4 py-2 mt-0">Add Chapter</x-button>
+          <x-button class="bg-transparent px-4 py-2 mt-0">Manage Chapters</x-button>
           <form action="/works/{{$work->id}}" method="POST" class="inline-block">
             @csrf
             @method('DELETE')
-            <button class="text-red-500 bg-transparent px-4 py-2 mt-0">Delete Work</button>
+            <x-button class="text-red-500 bg-transparent px-4 py-2 mt-0">Delete Work</x-button>
           </form>
         </div>
       @endif
@@ -386,11 +386,11 @@
       @endif
 
       <div class="text-right pr-4">
-        <button class="border border-red-500 bg-transparent">Cancel</button>
-        <button class="border border-red-500 bg-transparent">Reset</button>
-        <button class="border border-sky-500 bg-transparent">Save as Draft</button>
-        <button class="bg-sky-600 border text-white">Preview</button>
-        <button class="bg-sky-700 text-white">{{ $type == 'create' ? 'Post' : 'Update' }}</button>
+        <x-button class="border border-red-500 bg-transparent">Cancel</x-button>
+        <x-button class="border border-red-500 bg-transparent">Reset</x-button>
+        <x-button class="border border-sky-500 bg-transparent">Save as Draft</x-button>
+        <x-button class="bg-sky-600 border text-white">Preview</x-button>
+        <x-button class="bg-sky-700 text-white">{{ $type == 'create' ? 'Post' : 'Update' }}</x-button>
       </div>
     </form>
   </div>

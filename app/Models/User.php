@@ -12,6 +12,6 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     public function works(){
-      return $this->hasMany(Work::class);
+      return $this->hasMany(Work::class, 'creator_id');
     }
 }

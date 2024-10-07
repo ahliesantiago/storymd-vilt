@@ -23,30 +23,32 @@ should be 404
 
   <div class="work">
     <div class="nav-buttons text-center">
-      <button><a href="/works/{{$work->id}}/edit">Edit</a></button>
+      @if ($work['creator_id'] == auth()->id())
+        <x-button><a href="/works/{{ $work['id'] }}/edit">Edit Work</a></x-button>
+      @endif
       @if ($chapter_count > 1)
         @if($chapter_position == 'all')
-          <button>Chapter by Chapter</button>
+          <x-button>Chapter by Chapter</x-button>
         @endif
-        <button>Entire Work</button>
-        @if ( $chapter['position'] > 1 ) <button><a href="/works/{{ $work['id'] }}/chapters/{{ $chapter['position'] - 1 }}">← Previous Chapter</a></button> @endif
-        @if ( $chapter['position'] != $chapter_count ) <button><a href="/works/{{ $work['id'] }}/chapters/{{ $chapter['position'] + 1 }}">Next Chapter →</a></button> @endif
-        <button>Chapter Index ↓</button>
+        <x-button>Entire Work</x-button>
+        @if ( $chapter['position'] > 1 ) <x-button><a href="/works/{{ $work['id'] }}/chapters/{{ $chapter['position'] - 1 }}">← Previous Chapter</a></x-button> @endif
+        @if ( $chapter['position'] != $chapter_count ) <x-button><a href="/works/{{ $work['id'] }}/chapters/{{ $chapter['position'] + 1 }}">Next Chapter →</a></x-button> @endif
+        <x-button>Chapter Index ↓</x-button>
       @endif
-      <button>Comments</button>
-      <button>Share</button>
-      <button>Download</button>
+      <x-button>Comments</x-button>
+      <x-button>Share</x-button>
+      <x-button>Download</x-button>
     </div>
     <div class="nav-buttons text-center">
-      <button>Mark as Seen</button>
-      {{-- <button>Unmark as Seen</button> --}}
-      <button>Mark as Skipped</button>
-      {{-- <button>Unmark as Skipped</button> --}}
-      <button>Mark as Read</button>
-      {{-- <button>Unmark as Read</button> --}}
-      <button>Mark for Later</button>
-      {{-- <button>Unmark for Later</button> --}}
-      <button>Bookmark</button>
+      <x-button>Mark as Seen</x-button>
+      {{-- <x-button>Unmark as Seen</x-button> --}}
+      <x-button>Mark as Skipped</x-button>
+      {{-- <x-button>Unmark as Skipped</x-button> --}}
+      <x-button>Mark as Read</x-button>
+      {{-- <x-button>Unmark as Read</x-button> --}}
+      <x-button>Mark for Later</x-button>
+      {{-- <x-button>Unmark for Later</x-button> --}}
+      <x-button>Bookmark</x-button>
     </div>
 
     <x-card class="mx-4">
@@ -111,7 +113,15 @@ should be 404
         <img class="w-40 h-64 float-right" src="{{ asset('storage/' . $work->cover_image) }}" />
       @endif
       <h1 class="text-3xl text-center mt-6">{{ $work->title }}</h1>
-      <h2 class="text-xl text-center mb-3">{{ $work['creator_id'] ? $work->creator->username : 'Anonymous' }}</h2>
+      <h2 class="text-xl text-center mb-3">
+        @if ($work['creator_id'])
+          <x-dotted-link url="/users/{{$work->creator->username}}">
+            {{ $work->creator->username }}
+          </x-dotted-link>
+        @else
+          Anonymous
+        @endif
+      </h2>
       <hr>
       <h2 class="text-xl text-center m-3">
         <a href="/works/{{ $work['id'] }}/chapters/{{ $chapter['position'] }}" class="underline">
@@ -145,14 +155,14 @@ should be 404
     @endif
   
     <div class="nav-buttons text-center">
-      <button>↑ Top</button>
+      <x-button>↑ Top</x-button>
       @if ($chapter_count > 1)
-        @if ( $chapter['position'] != $chapter_count ) <button><a href="/works/{{ $work['id'] }}/chapters/{{ $chapter['position'] + 1 }}">Next Chapter →</a></button> @endif
-        @if ( $chapter['position'] > 1 ) <button><a href="/works/{{ $work['id'] }}/chapters/{{ $chapter['position'] - 1 }}">← Previous Chapter</a></button> @endif
+        @if ( $chapter['position'] != $chapter_count ) <x-button><a href="/works/{{ $work['id'] }}/chapters/{{ $chapter['position'] + 1 }}">Next Chapter →</a></x-button> @endif
+        @if ( $chapter['position'] > 1 ) <x-button><a href="/works/{{ $work['id'] }}/chapters/{{ $chapter['position'] - 1 }}">← Previous Chapter</a></x-button> @endif
       @endif
-      <button>Kudos ♥</button>
-      <button>Bookmark</button>
-      <button>Comments</button>
+      <x-button>Kudos ♥</x-button>
+      <x-button>Bookmark</x-button>
+      <x-button>Comments</x-button>
     </div>
   
     <div class="kudoses">
@@ -167,7 +177,7 @@ should be 404
         <textarea class="w-full mt-10 mb-5" name="comment" id="comment" rows="10"></textarea>
         <div class="flex justify-between">
           <p class="self-center">10000 characters left</p>
-          <button>Comment</button>
+          <x-button>Comment</x-button>
         </div>
       </form>
     </div>

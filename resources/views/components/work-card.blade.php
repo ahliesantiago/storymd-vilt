@@ -1,6 +1,6 @@
 @props(['work'])
 
-<x-card>
+<x-card {{ $attributes->merge(['class' => '']) }}>
   <div class="flex justify-between">
     <div>
       <div class="flex">
@@ -8,7 +8,7 @@
         <div class="ms-3">
           <p>
             <a class="text-red-800 underline" href="/works/{{ $work['id'] }}/chapters/1">{{ $work['title'] }}</a>
-            by <a class="text-red-800 underline" href="#">{{ $work->creator->username }}</a>
+            by <a class="text-red-800 underline" href="/users/{{ $work->creator->username }}">{{ $work->creator->username }}</a>
           </p>
           <p>
             @php
