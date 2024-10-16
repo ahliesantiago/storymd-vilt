@@ -156,13 +156,18 @@ class WorkController extends Controller
       $work->tags()->attach($tags);
     }
 
-    return redirect()->route('new-work.show', ['work_id' => $work->id, 'chapter_position' => 1])
+    return redirect()->route('work.show', ['work_id' => $work->id, 'chapter_position' => 1])
       ->with('success', 'Work created successfully');
   }
 
   // Shows the form for editing Work
   public function edit(Work $work){
-    // dd($work);
+    if($work->creator_id != auth()->id()){
+      return redirect()
+        ->route('work.show', ['work_id' => $work->id, 'chapter_position' => 1])
+        ->with('error', 'You are not authorized to edit this work');
+    }
+
     return view('works.form', [
       'type' => "edit",
       'work' => $work,
@@ -179,7 +184,10 @@ class WorkController extends Controller
 
   // Handles edit form submission and actual update of Work record in the database
   public function update(Request $request, Work $work){
-    // dd($request);
+    if($work->creator_id !== auth()->id()){
+      abort(403, 'Unauthorized action');
+    }
+
     $chapter_count = Chapter::where('work_id', $work->id)->count();
     $formFields = $request->validate([
       'title' => ['required', 'max:255'],
@@ -230,12 +238,16 @@ class WorkController extends Controller
       $work->tags()->syncWithoutDetaching($tags);
     }
 
-    return redirect()->route('new-work.show', ['work_id' => $work->id, 'chapter_position' => 1])
+    return redirect()->route('work.show', ['work_id' => $work->id, 'chapter_position' => 1])
       ->with('success', 'Work updated successfully');
   }
 
   // Handles deletion of a Work from the database
   public function destroy(Work $work){
+    if($work->creator_id !== auth()->id()){
+      abort(403, 'Unauthorized action');
+    }
+    
     $work->warnings()->detach();
     $work->categories()->detach();
     $work->tags()->detach();

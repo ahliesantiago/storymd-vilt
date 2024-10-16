@@ -386,11 +386,13 @@
       @endif
 
       <div class="text-right pr-4">
-        <x-button class="border border-red-500 bg-transparent">Cancel</x-button>
+        <x-button class="border border-red-500 bg-transparent">
+          <a href="{{ $type == 'create' ? '/works' : '/works/' . $work->id . '/chapters/1' }}">Cancel</a>
+        </x-button>
         <x-button class="border border-red-500 bg-transparent">Reset</x-button>
         <x-button class="border border-sky-500 bg-transparent">Save as Draft</x-button>
         <x-button class="bg-sky-600 border text-white">Preview</x-button>
-        <x-button class="bg-sky-700 text-white">{{ $type == 'create' ? 'Post' : 'Update' }}</x-button>
+        <x-button type="submit" class="bg-sky-700 text-white">{{ $type == 'create' ? 'Post' : 'Update' }}</x-button>
       </div>
     </form>
   </div>

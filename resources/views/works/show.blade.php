@@ -19,6 +19,13 @@ should be 404
   >
     {{ session('success') }}
   </div>
+@elseif (session('error'))
+  <div
+    class="text-center mt-1 py-1 bg-red-400 border border-red-600 text-white"
+    x-data="{show: true}" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+  >
+    {{ session('error') }}
+  </div>
 @endif
 
   <div class="work">
